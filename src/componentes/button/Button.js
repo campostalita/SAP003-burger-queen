@@ -7,13 +7,10 @@ const style = StyleSheet.create({
     backgroundColor: "#F2921D",
     borderColor: "#F2921D",
     borderRadius: 10,
-    width:"25%",
-    height: "25%"
   }
 });
 
 const Button = props => {
-  console.log(props);
   return (
     <button
       className={css(props.className || style.defaultButton)}

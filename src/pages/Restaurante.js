@@ -56,6 +56,11 @@ const style = StyleSheet.create({
   },
   colorName: {
     color: "white"
+  },
+  btnDel: {
+    fontSize: "20px",
+    backgroundColor: "#260101",
+    border: "none"
   }
 });
 
@@ -64,14 +69,15 @@ const style = StyleSheet.create({
 function Restaurante() {
   const [item1, setItem1] = useState([]);
   const [item2, setItem2] = useState([]);
+  const [item3, setItem3] = useState([]);
   const [productSelect, setProductSelect] = useState([]);
   const [filterMenu, setFilterMenu] = useState("breakfast");
   const [client, setClient] = useState("");
   const [table, setTable] = useState("");
   const [total, setTotal] = useState("");
-  const [options, setOptions] = useState([]);
+  const [optionsAndExtras, setOptionsAndExtras] = useState([]);
   //const [modal, setModal] = useState({status:false});
-  const [extra, setExtra] = useState([]);
+  const [selectedOptionsAndExtras, setSelectedOptionsAndExtras] = useState({});
 
   useEffect(() => {
     firebase
@@ -93,6 +99,14 @@ function Restaurante() {
             ...doc.data()
           }));
         setItem2(products2);
+
+        const products3 = snapshot.docs
+          .filter(doc => doc.data().burger)
+          .map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          }));
+        setItem3(products3);
       });
   }, []);
 
@@ -113,7 +127,6 @@ function Restaurante() {
         setProductSelect([]);
         setTotal("");
       });
-    
   }
 
   const increaseUnit = product => {
@@ -138,21 +151,13 @@ function Restaurante() {
     }
   }
 
-  const openOptions = elem => {
+  const openOptionsAndExtras = elem => {
     if (elem.options.length !== 0) {
-      setOptions(elem);
+      setOptionsAndExtras(elem);
     } else {
       increaseUnit(elem);
     }
   };
-
-  const openExtra =(elem)=>{
-    if(elem.extra.lenght !==0){
-        setExtra(elem)
-    }else{
-        increaseUnit(elem)
-    }
-};
 
   const valueOrder = productSelect.reduce(
     (acc, item) => acc + item.contador * item.price,
@@ -163,6 +168,16 @@ function Restaurante() {
     const index = productSelect.indexOf(item);
     productSelect.splice(index, 1);
     setProductSelect([...productSelect]);
+  };
+
+  const addOptions = () => {
+    const teste2 = {
+      ...optionsAndExtras,
+      name: `${optionsAndExtras.name} ${selectedOptionsAndExtras.option} ${selectedOptionsAndExtras.extra}`
+    };
+    increaseUnit(teste2);
+    setSelectedOptionsAndExtras([]);
+    setOptionsAndExtras([]);
   };
 
   return (
@@ -193,7 +208,9 @@ function Restaurante() {
             <div>
               <MenuList
                 menuItens={filterMenu === "breakfast" ? item1 : item2}
-                handleClick={(item) => {openOptions(item); openExtra(item)}}
+                handleClick={item => {
+                  openOptionsAndExtras(item);
+                }}
                 name={productSelect.name}
                 price={productSelect.price}
                 key={productSelect.id}
@@ -203,54 +220,58 @@ function Restaurante() {
         </section>
 
         <section>
-          {options.length !== 0
-            ? options.options.map((elem, index) => (
+          {optionsAndExtras.length !== 0 ? (
+            <div>
+              {optionsAndExtras.options.map((elem, index) => (
                 <div key={index}>
                   <input
                     type="radio"
                     name="types"
-                    value={options.name}
+                    value={optionsAndExtras.name}
                     onClick={() => {
-                      const teste = {
-                        ...options,
-                        name: `${options.name} ${elem}`
-                      };
-                      increaseUnit(teste);
-                      setOptions([]);
+                      setSelectedOptionsAndExtras({
+                        ...selectedOptionsAndExtras,
+                        option: elem
+                      });
                     }}
-                  />{elem}
+                  />
+                  {elem}
                 </div>
-              ))
-            : false}
-             {extra.length !== 0 ?
-                    extra.extra.map((elem, index)=>(
-                        <div key={index}>
-                            <input
-                                type="radio"
-                                name="extra"
-                                value={extra.name}
-                                onClick={()=> {
-                                    const teste2={...extra, name: `${extra.name} ${elem}`}
-                                    increaseUnit(teste2)
-
-                                }}
-                            />{elem}
-                        </div>
-                    ))
-                :false}
+              ))}
+              {optionsAndExtras.extra.map((elem, index) => (
+                <div key={index}>
+                  <input
+                    type="radio"
+                    name="extra"
+                    value={optionsAndExtras.name}
+                    onClick={() => {
+                      setSelectedOptionsAndExtras({
+                        ...selectedOptionsAndExtras,
+                        extra: elem
+                      });
+                    }}
+                  />
+                  {elem}
+                </div>
+              ))}
+              <Button handleClick={addOptions} children="Adicionar" />
+            </div>
+          ) : (
+            false
+          )}
         </section>
         <section className={css(style.wishList)}>
           <div className={css(style.requestData)}>
-            <h4 className={css(style.colorName)}>Cliente</h4>
             <Input
+              placeholder="Nome do Cliente"
               id="input-client"
               type="text"
               value={client}
               handleChange={e => setClient(e.currentTarget.value)}
             />
-            <h4 className={css(style.colorName)}>Mesa</h4>
 
             <Input
+              placeholder="Número da mesa"
               id="input-number"
               type="number"
               value={table}
@@ -270,7 +291,8 @@ function Restaurante() {
               />
               {product.name} R$ {product.price},00
               <Button
-                children={"Del"}
+                className={style.btnDel}
+                children={"🗑️"}
                 handleClick={e => {
                   e.preventDefault();
                   removeItem(product);
@@ -297,5 +319,3 @@ function Restaurante() {
 }
 
 export default Restaurante;
-
-
