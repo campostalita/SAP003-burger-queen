@@ -4,7 +4,8 @@ import MenuList from "../componentes/menu/Menu";
 import firebase from "../utils/config.js";
 import { StyleSheet, css } from "aphrodite/no-important";
 import Input from "../componentes/input/Input";
-import Logo from "./logo.png";
+import Back from "../componentes/back/Back.js"
+
 //import { tsPropertySignature } from '@babel/types';
 //import Item from './componentes/selectItem/Item'
 
@@ -36,25 +37,37 @@ const style = StyleSheet.create({
     display: "flex",
     justifyContent: "space-around",
     backgroundColor: "#260101",
-    paddingTop: "1%"
+    paddingTop: "1%",
+    height: "85vh"
   },
   selectMenu: {
     display: "flex",
     flexDirection: "column",
     width: "45%",
+    height: "53%",
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "flex-start"
   },
   wishList: {
     width: "45%",
-    alignItems: "center",
-    color: "white"
+    color: "white",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start"
   },
   requestData: {
     display: "flex",
     width: "50%"
   },
+  requestInformation:{
+    margin:"20px",
+    display:"flex",
+    flexDirection: "column"
+  },
   colorName: {
+    color: "white"
+  },
+  optionsExtras: {
     color: "white"
   },
   btnDel: {
@@ -64,17 +77,13 @@ const style = StyleSheet.create({
   }
 });
 
-//<Button text="Clique aqui" />
-
 function Restaurante() {
   const [item1, setItem1] = useState([]);
   const [item2, setItem2] = useState([]);
-  const [item3, setItem3] = useState([]);
   const [productSelect, setProductSelect] = useState([]);
   const [filterMenu, setFilterMenu] = useState("breakfast");
   const [client, setClient] = useState("");
   const [table, setTable] = useState("");
-  const [total, setTotal] = useState("");
   const [optionsAndExtras, setOptionsAndExtras] = useState([]);
   //const [modal, setModal] = useState({status:false});
   const [selectedOptionsAndExtras, setSelectedOptionsAndExtras] = useState({});
@@ -99,14 +108,6 @@ function Restaurante() {
             ...doc.data()
           }));
         setItem2(products2);
-
-        const products3 = snapshot.docs
-          .filter(doc => doc.data().burger)
-          .map(doc => ({
-            id: doc.id,
-            ...doc.data()
-          }));
-        setItem3(products3);
       });
   }, []);
 
@@ -119,13 +120,13 @@ function Restaurante() {
         client,
         table: parseInt(table),
         productSelect,
-        total
+        total: valueOrder,
+        status: "Preparando",
       })
       .then(() => {
         setTable("");
         setClient("");
         setProductSelect([]);
-        setTotal("");
       });
   }
 
@@ -139,7 +140,7 @@ function Restaurante() {
     }
   };
 
-  function decreaseUnit(product) {
+  const decreaseUnit = product => {
     if (product.contador === 1) {
       const removerProductForm = productSelect.filter(erase => {
         return erase !== product;
@@ -155,6 +156,7 @@ function Restaurante() {
     if (elem.options.length !== 0) {
       setOptionsAndExtras(elem);
     } else {
+      setOptionsAndExtras([]);
       increaseUnit(elem);
     }
   };
@@ -173,7 +175,10 @@ function Restaurante() {
   const addOptions = () => {
     const teste2 = {
       ...optionsAndExtras,
-      name: `${optionsAndExtras.name} ${selectedOptionsAndExtras.option} ${selectedOptionsAndExtras.extra}`
+      name: `
+        ${optionsAndExtras.name} 
+        ${selectedOptionsAndExtras.option ? selectedOptionsAndExtras.option : ""} 
+        ${selectedOptionsAndExtras.extra ? selectedOptionsAndExtras.extra : "" }`
     };
     increaseUnit(teste2);
     setSelectedOptionsAndExtras([]);
@@ -182,11 +187,11 @@ function Restaurante() {
 
   return (
     <>
-      <header className={css(style.header)}>
+      {/* <header className={css(style.header)}>
         <h3 className={css(style.slogan)}>O sabor da realeza</h3>
         <img className={css(style.logo)} src={Logo} alt="Logo Burger Queen" />
-      </header>
-
+      </header> */}
+      <Back />
       <main className={css(style.theMain)}>
         <section className={css(style.selectMenu)}>
           <h2 className={css(style.colorName)}>Menu</h2>
@@ -217,52 +222,56 @@ function Restaurante() {
               />
             </div>
           </div>
-        </section>
 
-        <section>
-          {optionsAndExtras.length !== 0 ? (
-            <div>
-              {optionsAndExtras.options.map((elem, index) => (
-                <div key={index}>
-                  <input
-                    type="radio"
-                    name="types"
-                    value={optionsAndExtras.name}
-                    onClick={() => {
-                      setSelectedOptionsAndExtras({
-                        ...selectedOptionsAndExtras,
-                        option: elem
-                      });
-                    }}
-                  />
-                  {elem}
-                </div>
-              ))}
-              {optionsAndExtras.extra.map((elem, index) => (
-                <div key={index}>
-                  <input
-                    type="radio"
-                    name="extra"
-                    value={optionsAndExtras.name}
-                    onClick={() => {
-                      setSelectedOptionsAndExtras({
-                        ...selectedOptionsAndExtras,
-                        extra: elem
-                      });
-                    }}
-                  />
-                  {elem}
-                </div>
-              ))}
-              <Button handleClick={addOptions} children="Adicionar" />
-            </div>
-          ) : (
-            false
-          )}
+          <section className={css(style.optionsExtras)}>
+            {optionsAndExtras.length !== 0 ? (
+              <div>
+                <p>Escolha seu tipo de carne e seu adicional</p>
+                {optionsAndExtras.options.map((elem, index) => (
+                  <div key={index}>
+                    <input
+                      type="radio"
+                      name="types"
+                      value={optionsAndExtras.name}
+                      onClick={() => {
+                        setSelectedOptionsAndExtras({
+                          ...selectedOptionsAndExtras,
+                          option: elem
+                        });
+                      }}
+                    />
+                    {elem}
+                  </div>
+                ))}
+                {optionsAndExtras.extra.map((elem, index) => (
+                  <div key={index}>
+                    <input
+                      type="radio"
+                      name="extra"
+                      value={optionsAndExtras.name}
+                      onClick={() => {
+                        setSelectedOptionsAndExtras({
+                          ...selectedOptionsAndExtras,
+                          extra: elem
+                        });
+                      }}
+                    />
+                    {elem}
+                  </div>
+                ))}
+                <p>
+                  {" "}
+                  <Button handleClick={addOptions} children="Adicionar" />
+                </p>
+              </div>
+            ) : (
+              false
+            )}
+          </section>
         </section>
         <section className={css(style.wishList)}>
           <div className={css(style.requestData)}>
-            <Input
+           <div className={css(style.requestInformation)}> <Input
               placeholder="Nome do Cliente"
               id="input-client"
               type="text"
@@ -277,6 +286,7 @@ function Restaurante() {
               value={table}
               handleChange={e => setTable(e.currentTarget.value)}
             />
+            </div>
           </div>
           {productSelect.map((product, index) => (
             <div key={index}>
@@ -289,7 +299,7 @@ function Restaurante() {
                 children={"+"}
                 handleClick={() => increaseUnit(product)}
               />
-              {product.name} R$ {product.price},00
+              {product.name} {product.price.toLocaleString('pt-BR',{ style: 'currency', currency:  'BRL' })}
               <Button
                 className={style.btnDel}
                 children={"🗑️"}
@@ -303,7 +313,7 @@ function Restaurante() {
 
           <p>
             <strong className={css(style.colorName)}>
-              Valor do Pedido: {valueOrder}
+              Valor do Pedido: {valueOrder.toLocaleString('pt-BR',{ style: 'currency', currency:  'BRL' })} 
             </strong>
           </p>
           <Button

@@ -4,7 +4,7 @@ import OrderCozinha from "../componentes/order/Order.js";
 import Button from "../componentes/button/Button.js";
 
 
-const Cozinha = () => {
+const Delivery = () => {
   const [client, setClient] = useState([]);
 
   useEffect(() => {
@@ -24,9 +24,8 @@ const Cozinha = () => {
   }, []);
 
   const statusUpdate = (doc) => {
-     
       firebase.collection('client').doc(doc.id).update({
-          status: 'Pronto',     
+          status: 'Entregue',     
       })
   }
 
@@ -34,7 +33,7 @@ const Cozinha = () => {
     <>
       <div>
         {client.map((doc, index) =>
-          doc.status === "Preparando" ? (
+          doc.status === "Pronto" ? (
             <div key={index}>
               <OrderCozinha
                 name={doc.client}
@@ -43,7 +42,7 @@ const Cozinha = () => {
                 productSelect={doc.productSelect}
               />
               <Button
-                children={"Pedido Prontinho"}
+                children={"Pedido Entregue, Graças a Deus!"}
                 handleClick={() => statusUpdate(doc)}
               />
             </div>
@@ -54,4 +53,4 @@ const Cozinha = () => {
   );
 };
 
-export default Cozinha;
+export default Delivery;
