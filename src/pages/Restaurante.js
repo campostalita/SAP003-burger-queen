@@ -4,10 +4,7 @@ import MenuList from "../componentes/menu/Menu";
 import firebase from "../utils/config.js";
 import { StyleSheet, css } from "aphrodite/no-important";
 import Input from "../componentes/input/Input";
-import Back from "../componentes/back/Back.js"
-
-//import { tsPropertySignature } from '@babel/types';
-//import Item from './componentes/selectItem/Item'
+import Back from "../componentes/back/Back";
 
 const style = StyleSheet.create({
   header: {
@@ -25,13 +22,18 @@ const style = StyleSheet.create({
     color: "#590202",
     margin: " 4% 0% 0 0%"
   },
+  menu: {
+    display: "flex",
+    flexWrap: "wrap"
+  },
   btnMenu: {
     color: "#590202",
     backgroundColor: "#F2C335",
     borderColor: "#F2C335",
-    borderRadius: 10
-    /* margin: "1%",
-    display: "flex" */
+    borderRadius: 10,
+    padding: "15px",
+    fontWeight: "bold",
+    marginLeft: "10px"
   },
   theMain: {
     display: "flex",
@@ -46,23 +48,33 @@ const style = StyleSheet.create({
     width: "45%",
     height: "53%",
     alignItems: "center",
-    justifyContent: "flex-start"
+    justifyContent: "flex-start",
+    marginTop: "20px"
   },
   wishList: {
+    fontSize: "22px",
     width: "45%",
     color: "white",
     display: "flex",
     flexDirection: "column",
-    justifyContent: "flex-start"
+    justifyContent: "flex-start",
+    marginTop: "40px"
   },
   requestData: {
     display: "flex",
-    width: "50%"
+    margin: "0 0 30px"
   },
-  requestInformation:{
-    margin:"20px",
-    display:"flex",
+  requestInformation: {
+    display: "flex",
     flexDirection: "column"
+  },
+  input: {
+    margin: "5px",
+    display: "flex",
+    flexDirection: "column",
+    borderRadius: "20px",
+    textAlign: "center",
+    padding: "7px"
   },
   colorName: {
     color: "white"
@@ -74,6 +86,15 @@ const style = StyleSheet.create({
     fontSize: "20px",
     backgroundColor: "#260101",
     border: "none"
+  },
+  btnRadius: {
+    color: "#590202",
+    backgroundColor: "#F2921D",
+    borderColor: "#F2921D",
+    borderRadius: 10,
+    margin: "2%",
+    width: "9%",
+    height: "50%"
   }
 });
 
@@ -85,7 +106,6 @@ function Restaurante() {
   const [client, setClient] = useState("");
   const [table, setTable] = useState("");
   const [optionsAndExtras, setOptionsAndExtras] = useState([]);
-  //const [modal, setModal] = useState({status:false});
   const [selectedOptionsAndExtras, setSelectedOptionsAndExtras] = useState({});
 
   useEffect(() => {
@@ -121,7 +141,7 @@ function Restaurante() {
         table: parseInt(table),
         productSelect,
         total: valueOrder,
-        status: "Preparando",
+        status: "Preparando"
       })
       .then(() => {
         setTable("");
@@ -150,7 +170,7 @@ function Restaurante() {
       product.contador--;
       setProductSelect([...productSelect]);
     }
-  }
+  };
 
   const openOptionsAndExtras = elem => {
     if (elem.options.length !== 0) {
@@ -161,10 +181,10 @@ function Restaurante() {
     }
   };
 
-  const valueOrder = productSelect.reduce(
-    (acc, item) => acc + item.contador * item.price,
-    0
-  );
+  const valueOrder = productSelect.reduce((acc, item) => {
+    const extraPrice = item.selectedExtra ? 1 : 0;
+    return acc + item.contador * (item.price + extraPrice);
+  }, 0);
 
   const removeItem = item => {
     const index = productSelect.indexOf(item);
@@ -173,24 +193,25 @@ function Restaurante() {
   };
 
   const addOptions = () => {
-    const teste2 = {
+    const aditionOptions = {
       ...optionsAndExtras,
+      selectedExtra: selectedOptionsAndExtras.extra
+        ? selectedOptionsAndExtras.extra
+        : "",
       name: `
         ${optionsAndExtras.name} 
-        ${selectedOptionsAndExtras.option ? selectedOptionsAndExtras.option : ""} 
-        ${selectedOptionsAndExtras.extra ? selectedOptionsAndExtras.extra : "" }`
+        ${
+          selectedOptionsAndExtras.option ? selectedOptionsAndExtras.option : ""
+        } 
+        ${selectedOptionsAndExtras.extra ? selectedOptionsAndExtras.extra : ""}`
     };
-    increaseUnit(teste2);
+    increaseUnit(aditionOptions);
     setSelectedOptionsAndExtras([]);
     setOptionsAndExtras([]);
   };
 
   return (
     <>
-      {/* <header className={css(style.header)}>
-        <h3 className={css(style.slogan)}>O sabor da realeza</h3>
-        <img className={css(style.logo)} src={Logo} alt="Logo Burger Queen" />
-      </header> */}
       <Back />
       <main className={css(style.theMain)}>
         <section className={css(style.selectMenu)}>
@@ -210,7 +231,7 @@ function Restaurante() {
             </Button>
           </div>
           <div>
-            <div>
+            <div className={css(style.menu)}>
               <MenuList
                 menuItens={filterMenu === "breakfast" ? item1 : item2}
                 handleClick={item => {
@@ -271,49 +292,62 @@ function Restaurante() {
         </section>
         <section className={css(style.wishList)}>
           <div className={css(style.requestData)}>
-           <div className={css(style.requestInformation)}> <Input
-              placeholder="Nome do Cliente"
-              id="input-client"
-              type="text"
-              value={client}
-              handleChange={e => setClient(e.currentTarget.value)}
-            />
-
-            <Input
-              placeholder="Número da mesa"
-              id="input-number"
-              type="number"
-              value={table}
-              handleChange={e => setTable(e.currentTarget.value)}
-            />
+            <div className={css(style.requestInformation)}>
+              <Input
+                placeholder="Nome do Cliente"
+                className={css(style.input)}
+                type="text"
+                value={client}
+                handleChange={e => setClient(e.currentTarget.value)}
+              />
+              <Input
+                placeholder="Número da mesa"
+                className={css(style.input)}
+                type="number"
+                value={table}
+                handleChange={e => setTable(e.currentTarget.value)}
+              />
             </div>
           </div>
-          {productSelect.map((product, index) => (
-            <div key={index}>
-              <Button
-                children={"-"}
-                handleClick={() => decreaseUnit(product)}
-              />
-              {product.contador}
-              <Button
-                children={"+"}
-                handleClick={() => increaseUnit(product)}
-              />
-              {product.name} {product.price.toLocaleString('pt-BR',{ style: 'currency', currency:  'BRL' })}
-              <Button
-                className={style.btnDel}
-                children={"🗑️"}
-                handleClick={e => {
-                  e.preventDefault();
-                  removeItem(product);
-                }}
-              />
-            </div>
-          ))}
+          {productSelect.map((product, index) => {
+            const extraPrice = product.selectedExtra ? 1 : 0;
+            return (
+              <div key={index}>
+                <Button
+                  className={style.btnRadius}
+                  children={"-"}
+                  handleClick={() => decreaseUnit(product)}
+                />
+                {product.contador}
+                <Button
+                  className={style.btnRadius}
+                  children={"+"}
+                  handleClick={() => increaseUnit(product)}
+                />
+                {product.name}{" "}
+                {(product.price + extraPrice).toLocaleString("pt-BR", {
+                  style: "currency",
+                  currency: "BRL"
+                })}
+                <Button
+                  className={style.btnDel}
+                  children={"🗑️"}
+                  handleClick={e => {
+                    e.preventDefault();
+                    removeItem(product);
+                  }}
+                />
+              </div>
+            );
+          })}
 
           <p>
             <strong className={css(style.colorName)}>
-              Valor do Pedido: {valueOrder.toLocaleString('pt-BR',{ style: 'currency', currency:  'BRL' })} 
+              Valor do Pedido:{" "}
+              {valueOrder.toLocaleString("pt-BR", {
+                style: "currency",
+                currency: "BRL"
+              })}
             </strong>
           </p>
           <Button

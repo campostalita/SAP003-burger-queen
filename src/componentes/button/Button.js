@@ -3,10 +3,12 @@ import { css, StyleSheet } from "aphrodite";
 
 const style = StyleSheet.create({
   defaultButton: {
+    margin: "2%",
     color: "#590202",
     backgroundColor: "#F2921D",
     borderColor: "#F2921D",
     borderRadius: 10,
+    fontWeight: "bold"
   }
 });
 

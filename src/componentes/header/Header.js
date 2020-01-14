@@ -20,7 +20,7 @@ const style = StyleSheet.create({
   }
 });
 
-const Header = props => {
+const Header = () => {
   return (
     <>
       <header className={css(style.header)}>

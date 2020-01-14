@@ -10,7 +10,7 @@ const Input = props => {
         value={props.value}
         id={props.id}
         onChange={props.handleChange}
-        className="input"
+        className={props.className}
       />
     </div>
   );
