@@ -162,10 +162,8 @@ function Restaurante() {
 
   const decreaseUnit = product => {
     if (product.contador === 1) {
-      const removerProductForm = productSelect.filter(erase => {
-        return erase !== product;
+     removeItem(product);
       });
-      setProductSelect([...removerProductForm]);
     } else {
       product.contador--;
       setProductSelect([...productSelect]);
@@ -187,9 +185,8 @@ function Restaurante() {
   }, 0);
 
   const removeItem = item => {
-    const index = productSelect.indexOf(item);
-    productSelect.splice(index, 1);
-    setProductSelect([...productSelect]);
+    const removeItem = productSelect.filter(elem => elem !== item);
+    setProductSelect([...removeItem]);
   };
 
   const addOptions = () => {
