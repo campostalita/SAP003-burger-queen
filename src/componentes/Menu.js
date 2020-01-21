@@ -3,7 +3,7 @@ import Button from "./Button";
 
 const MenuList = props => {
   return (
-    <ol>
+    <>
       {props.menuItens.map(menu => (
         <Button
           key={menu.id}
@@ -16,7 +16,7 @@ const MenuList = props => {
           </div>
         </Button>
       ))}
-    </ol>
+    </>
   );
 };
 

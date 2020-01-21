@@ -4,7 +4,10 @@ import MenuList from "../componentes/Menu";
 import firebase from "../utils/config.js";
 import { StyleSheet, css } from "aphrodite/no-important";
 import Input from "../componentes/Input";
-import Back from "../componentes/back/Back";
+import growl from "growl-alert";
+import 'growl-alert/dist/growl-alert.css'
+import Header from "../componentes/Header"
+
 
 const style = StyleSheet.create({
   header: {
@@ -24,32 +27,37 @@ const style = StyleSheet.create({
   },
   menu: {
     display: "flex",
-    flexWrap: "wrap"
+    flexWrap: "wrap",
+    //overflow: "auto",
+    justifyContent: "space-evenly",
+    width: "19rem"
+    
   },
   btnMenu: {
     color: "#590202",
     backgroundColor: "#F2C335",
     borderColor: "#F2C335",
     borderRadius: 10,
-    padding: "15px",
+    padding: "6px",
     fontWeight: "bold",
-    marginLeft: "10px"
+    marginLeft: "8px"
   },
   theMain: {
     display: "flex",
     justifyContent: "space-around",
     backgroundColor: "#260101",
     paddingTop: "1%",
-    height: "85vh"
+
+   //z height: "100vh"
   },
   selectMenu: {
     display: "flex",
     flexDirection: "column",
     width: "45%",
-    height: "53%",
+    //height: "53%",
     alignItems: "center",
-    justifyContent: "flex-start",
-    marginTop: "20px"
+    //justifyContent: "flex-start",
+    //marginTop: "10px"
   },
   wishList: {
     fontSize: "22px",
@@ -57,8 +65,8 @@ const style = StyleSheet.create({
     color: "white",
     display: "flex",
     flexDirection: "column",
-    justifyContent: "flex-start",
-    marginTop: "40px"
+    //justifyContent: "flex-start",
+    marginTop: "10px"
   },
   requestData: {
     display: "flex",
@@ -66,18 +74,22 @@ const style = StyleSheet.create({
   },
   requestInformation: {
     display: "flex",
-    flexDirection: "column"
+    //flexDirection: "column"
   },
   input: {
     margin: "5px",
     display: "flex",
     flexDirection: "column",
-    borderRadius: "20px",
-    textAlign: "center",
-    padding: "7px"
+    borderRadius: "10px",
+    width: "90%",
+    //textAlign: "center",
+    padding: "2px"
   },
   colorName: {
-    color: "white"
+    color: "white",
+    fontSize: "20px",
+    margin: "14px"
+    
   },
   optionsExtras: {
     color: "white"
@@ -92,11 +104,29 @@ const style = StyleSheet.create({
     backgroundColor: "#F2921D",
     borderColor: "#F2921D",
     borderRadius: 10,
-    margin: "2%",
-    width: "9%",
-    height: "50%"
+    margin: "3px",
+    width: "26px",
+    height: "26px"
+  },
+  orders:{
+    fontSize: "18px",
+    overflow: "auto"
+  },
+  detailsBurger: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  kitchen:{
+    height: "100vh",
+    backgroundColor: "#260101",
   }
 });
+
+const option = {
+  fadeAway: true,
+  fadeAwayTimeout: 2000,
+};
 
 function Restaurante() {
   const [cafe, setCafe] = useState([]);
@@ -133,7 +163,7 @@ function Restaurante() {
 
   function onSubmit(e) {
     e.preventDefault();
-
+    if(client && table && productSelect.length)
     firebase
       .collection("client")
       .add({
@@ -144,6 +174,7 @@ function Restaurante() {
         status: "Preparando"
       })
       .then(() => {
+        growl.success({text:'Pedido enviado', ...option})
         setTable("");
         setClient("");
         setProductSelect([]);
@@ -207,8 +238,8 @@ function Restaurante() {
   };
 
   return (
-    <>
-      <Back />
+    <div className={css(style.kitchen)}>
+      <Header />
       <main className={css(style.theMain)}>
         <section className={css(style.selectMenu)}>
           <h2 className={css(style.colorName)}>Menu</h2>
@@ -244,6 +275,7 @@ function Restaurante() {
             {optionsAndExtras.length !== 0 ? (
               <div>
                 <p>Escolha seu tipo de carne e seu adicional</p>
+                <div className={css(style.detailsBurger)}>
                 {optionsAndExtras.options.map((elem, index) => (
                   <div key={index}>
                     <input
@@ -257,9 +289,11 @@ function Restaurante() {
                         });
                       }}
                     />
-                    {elem}
-                  </div>
+                   <span>{elem}</span>
+                  </div> 
                 ))}
+                </div>
+                <div className={css(style.detailsBurger)}>
                 {optionsAndExtras.extra.map((elem, index) => (
                   <div key={index}>
                     <input
@@ -276,6 +310,7 @@ function Restaurante() {
                     {elem}
                   </div>
                 ))}
+                </div>
                 <p>
                   {" "}
                   <Button handleClick={addOptions} children="Adicionar" />
@@ -305,10 +340,11 @@ function Restaurante() {
               />
             </div>
           </div>
+          <div className={css(style.orders)}>
           {productSelect.map((product, index) => {
             const extraPrice = product.selectedExtra ? 1 : 0;
             return (
-              <div key={index}>
+              <div  key={index}>
                 <Button
                   className={style.btnRadius}
                   children={"-"}
@@ -334,11 +370,12 @@ function Restaurante() {
                   }}
                 />
               </div>
-            );
+            ); 
           })}
+          </div>
 
-          <p>
-            <strong className={css(style.colorName)}>
+          <p className={css(style.colorName)}>
+            <strong >
               Valor do Pedido:{" "}
               {valueOrder.toLocaleString("pt-BR", {
                 style: "currency",
@@ -354,7 +391,7 @@ function Restaurante() {
           />
         </section>
       </main>
-    </>
+    </div>
   );
 }
 

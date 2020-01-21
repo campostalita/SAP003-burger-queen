@@ -2,17 +2,22 @@ import React, { useState, useEffect } from "react";
 import firebase from "../utils/config.js";
 import OrderCozinha from "../componentes/Order.js";
 import Button from "../componentes/Button.js";
-import Back from "../componentes/back/Back";
 import { StyleSheet, css } from "aphrodite/no-important";
+import Header from "../componentes/Header"
 
 const style = StyleSheet.create({
   bgDelivery: {
-    backgroundColor: "#260101",
+    
     color: "white",
-    height: "85vh",
+    
     display: "flex",
     justifyContent: "center",
     paddingTop: "30px 10px 0px 10px"
+  },
+
+  delivery: {
+    height: "100vh",
+    backgroundColor: "#260101",
   }
 });
 
@@ -46,8 +51,8 @@ const Delivery = () => {
   };
 
   return (
-    <>
-      <Back />
+    <div className={css(style.delivery)}>
+      <Header/>
       <div className={css(style.bgDelivery)}>
         {client.map((doc, index) =>
           doc.status === "Pronto" ? (
@@ -66,7 +71,7 @@ const Delivery = () => {
           ) : null
         )}
       </div>
-    </>
+    </div>
   );
 };
 
