@@ -10,7 +10,6 @@ const style = StyleSheet.create({
     justifyContent: "space-between",
     height: "10%",
     padding: "3.5rem 2rem"
-
   },
   logo: {
     width: "13%",
@@ -19,13 +18,11 @@ const style = StyleSheet.create({
   slogan: {
     fontFamily: "Metamorphous cursive",
     color: "#590202",
-    //margin: " 10% 0% 0 0%",
     fontSize: "18px"
   },
   bgLink: {
     display: "flex",
     alignItems: "center",
-    //justifyContent: "space-evenly"
   },
   link: {
     textDecorationLine: "none",

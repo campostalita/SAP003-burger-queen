@@ -4,6 +4,10 @@ import { StyleSheet, css } from "aphrodite/no-important";
 const style = StyleSheet.create({
   p:{
     margin: "1%",
+ },
+ bgOrder:{
+   width: "200px",
+   
  }
 });
 

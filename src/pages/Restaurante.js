@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
-import Button from '../componentes/Button';
+import Button from "../componentes/Button";
 import MenuList from "../componentes/Menu";
 import firebase from "../utils/config.js";
 import { StyleSheet, css } from "aphrodite/no-important";
 import Input from "../componentes/Input";
 import growl from "growl-alert";
-import 'growl-alert/dist/growl-alert.css'
-import Header from "../componentes/Header"
-
+import "growl-alert/dist/growl-alert.css";
+import Header from "../componentes/Header";
 
 const style = StyleSheet.create({
   header: {
@@ -28,10 +27,8 @@ const style = StyleSheet.create({
   menu: {
     display: "flex",
     flexWrap: "wrap",
-    //overflow: "auto",
     justifyContent: "space-evenly",
     width: "19rem"
-    
   },
   btnMenu: {
     color: "#590202",
@@ -46,18 +43,13 @@ const style = StyleSheet.create({
     display: "flex",
     justifyContent: "space-around",
     backgroundColor: "#260101",
-    paddingTop: "1%",
-
-   //z height: "100vh"
+    paddingTop: "1%"
   },
   selectMenu: {
     display: "flex",
     flexDirection: "column",
     width: "45%",
-    //height: "53%",
-    alignItems: "center",
-    //justifyContent: "flex-start",
-    //marginTop: "10px"
+    alignItems: "center"
   },
   wishList: {
     fontSize: "22px",
@@ -65,7 +57,6 @@ const style = StyleSheet.create({
     color: "white",
     display: "flex",
     flexDirection: "column",
-    //justifyContent: "flex-start",
     marginTop: "10px"
   },
   requestData: {
@@ -73,8 +64,7 @@ const style = StyleSheet.create({
     margin: "0 0 30px"
   },
   requestInformation: {
-    display: "flex",
-    //flexDirection: "column"
+    display: "flex"
   },
   input: {
     margin: "5px",
@@ -82,14 +72,12 @@ const style = StyleSheet.create({
     flexDirection: "column",
     borderRadius: "10px",
     width: "90%",
-    //textAlign: "center",
     padding: "2px"
   },
   colorName: {
     color: "white",
     fontSize: "20px",
     margin: "14px"
-    
   },
   optionsExtras: {
     color: "white"
@@ -108,7 +96,7 @@ const style = StyleSheet.create({
     width: "26px",
     height: "26px"
   },
-  orders:{
+  orders: {
     fontSize: "18px",
     overflow: "auto"
   },
@@ -117,15 +105,30 @@ const style = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center"
   },
-  kitchen:{
+  kitchen: {
     height: "100vh",
-    backgroundColor: "#260101",
+    backgroundColor: "#260101"
+  },
+  btnAdd:{ 
+  margin: "5px",
+  padding: "0px 2px 2px 2px",
+  color: "#590202",
+  backgroundColor: "#F2921D",
+  borderColor: "#F2921D",
+  borderRadius: 10,
+  fontWeight: "bold",
+  width: "6rem",
+  height: "2,5rem"
+  },
+  divBtnAdd:{
+    display: "flex",
+    justifyContent: "center"
   }
 });
 
 const option = {
   fadeAway: true,
-  fadeAwayTimeout: 2000,
+  fadeAwayTimeout: 2000
 };
 
 function Restaurante() {
@@ -163,22 +166,22 @@ function Restaurante() {
 
   function onSubmit(e) {
     e.preventDefault();
-    if(client && table && productSelect.length)
-    firebase
-      .collection("client")
-      .add({
-        client,
-        table: parseInt(table),
-        productSelect,
-        total: valueOrder,
-        status: "Preparando"
-      })
-      .then(() => {
-        growl.success({text:'Pedido enviado', ...option})
-        setTable("");
-        setClient("");
-        setProductSelect([]);
-      });
+    if (client && table && productSelect.length)
+      firebase
+        .collection("client")
+        .add({
+          client,
+          table: parseInt(table),
+          productSelect,
+          total: valueOrder,
+          status: "Preparando"
+        })
+        .then(() => {
+          growl.success({ text: "Pedido enviado", ...option });
+          setTable("");
+          setClient("");
+          setProductSelect([]);
+        });
   }
 
   const increaseUnit = product => {
@@ -193,9 +196,9 @@ function Restaurante() {
 
   const decreaseUnit = product => {
     if (product.contador === 1) {
-     removeItem(product);
+      removeItem(product);
     } else {
-      (product.contador--);
+      product.contador--;
       setProductSelect([...productSelect]);
     }
   };
@@ -274,46 +277,51 @@ function Restaurante() {
           <section className={css(style.optionsExtras)}>
             {optionsAndExtras.length !== 0 ? (
               <div>
-                <p>Escolha seu tipo de carne e seu adicional</p>
+                <p>Escolha seu tipo de carne e seu adicional 
+
+                </p>
                 <div className={css(style.detailsBurger)}>
-                {optionsAndExtras.options.map((elem, index) => (
-                  <div key={index}>
-                    <input
-                      type="radio"
-                      name="types"
-                      value={optionsAndExtras.name}
-                      onClick={() => {
-                        setSelectedOptionsAndExtras({
-                          ...selectedOptionsAndExtras,
-                          option: elem
-                        });
-                      }}
-                    />
-                   <span>{elem}</span>
-                  </div> 
-                ))}
+                  {optionsAndExtras.options.map((elem, index) => (
+                    <div key={index}>
+                      <input
+                        type="radio"
+                        name="types"
+                        value={optionsAndExtras.name}
+                        onClick={() => {
+                          setSelectedOptionsAndExtras({
+                            ...selectedOptionsAndExtras,
+                            option: elem
+                          });
+                        }}
+                      />
+                      <span>{elem}</span>
+                    </div>
+                  ))}
                 </div>
                 <div className={css(style.detailsBurger)}>
-                {optionsAndExtras.extra.map((elem, index) => (
-                  <div key={index}>
-                    <input
-                      type="radio"
-                      name="extra"
-                      value={optionsAndExtras.name}
-                      onClick={() => {
-                        setSelectedOptionsAndExtras({
-                          ...selectedOptionsAndExtras,
-                          extra: elem
-                        });
-                      }}
-                    />
-                    {elem}
-                  </div>
-                ))}
+                  {optionsAndExtras.extra.map((elem, index) => (
+                    <div key={index}>
+                      <input
+                        type="radio"
+                        name="extra"
+                        value={optionsAndExtras.name}
+                        onClick={() => {
+                          setSelectedOptionsAndExtras({
+                            ...selectedOptionsAndExtras,
+                            extra: elem
+                          });
+                        }}
+                      />
+                      {elem}
+                    </div>
+                  ))}
                 </div>
-                <p>
+                <p className={css(style.divBtnAdd)}>
                   {" "}
-                  <Button handleClick={addOptions} children="Adicionar" />
+                  <Button 
+                  className={(style.btnAdd)}
+                  handleClick={addOptions}
+                  children="Adicionar" />
                 </p>
               </div>
             ) : (
@@ -341,41 +349,41 @@ function Restaurante() {
             </div>
           </div>
           <div className={css(style.orders)}>
-          {productSelect.map((product, index) => {
-            const extraPrice = product.selectedExtra ? 1 : 0;
-            return (
-              <div  key={index}>
-                <Button
-                  className={style.btnRadius}
-                  children={"-"}
-                  handleClick={() => decreaseUnit(product)}
-                />
-                {product.contador}
-                <Button
-                  className={style.btnRadius}
-                  children={"+"}
-                  handleClick={() => increaseUnit(product)}
-                />
-                {product.name}{" "}
-                {(product.price + extraPrice).toLocaleString("pt-BR", {
-                  style: "currency",
-                  currency: "BRL"
-                })}
-                <Button
-                  className={style.btnDel}
-                  children={"🗑️"}
-                  handleClick={e => {
-                    e.preventDefault();
-                    removeItem(product);
-                  }}
-                />
-              </div>
-            ); 
-          })}
+            {productSelect.map((product, index) => {
+              const extraPrice = product.selectedExtra ? 1 : 0;
+              return (
+                <div key={index}>
+                  <Button
+                    className={style.btnRadius}
+                    children={"-"}
+                    handleClick={() => decreaseUnit(product)}
+                  />
+                  {product.contador}
+                  <Button
+                    className={style.btnRadius}
+                    children={"+"}
+                    handleClick={() => increaseUnit(product)}
+                  />
+                  {product.name}{" "}
+                  {(product.price + extraPrice).toLocaleString("pt-BR", {
+                    style: "currency",
+                    currency: "BRL"
+                  })}
+                  <Button
+                    className={style.btnDel}
+                    children={"🗑️"}
+                    handleClick={e => {
+                      e.preventDefault();
+                      removeItem(product);
+                    }}
+                  />
+                </div>
+              );
+            })}
           </div>
 
           <p className={css(style.colorName)}>
-            <strong >
+            <strong>
               Valor do Pedido:{" "}
               {valueOrder.toLocaleString("pt-BR", {
                 style: "currency",

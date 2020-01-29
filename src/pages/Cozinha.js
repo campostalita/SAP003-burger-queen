@@ -7,16 +7,33 @@ import Header from "../componentes/Header"
 
 const style = StyleSheet.create({
   bgCozinha: {
-    backgroundColor: "#260101",
     color: "white",
-    height: "85vh",
     display: "flex",
-    justifyContent: "center"
+    justifyContent: "center",
+    paddingTop: "30px 10px 0px 10px",
+    overflow: "auto"
   },
   cozinha: {
     height: "100vh",
     backgroundColor: "#260101",
-  }
+  },
+  orderCard: {
+    border: "3px solid",
+    borderColor: "#BF3604",
+    margin: "1%",
+    padding: "0px 0px 0px 10px"
+  },
+  btnCozinha: {
+    margin: "5px",
+    padding: "0px 2px 2px 2px",
+    color: "#590202",
+    backgroundColor: "#F2921D",
+    borderColor: "#F2921D",
+    borderRadius: 10,
+    fontWeight: "bold",
+    width: "6rem",
+    height: "2,5rem"
+  } 
 });
 
 const Cozinha = () => {
@@ -55,7 +72,7 @@ const Cozinha = () => {
       <div className={css(style.bgCozinha)}>
         {client.map((doc, index) =>
           doc.status === "Preparando" ? (
-            <div key={index}>
+            <div className={css(style.orderCard)} key={index}>
               <OrderCozinha
                 name={doc.client}
                 mesa={doc.table}
@@ -63,9 +80,9 @@ const Cozinha = () => {
                 productSelect={doc.productSelect}
               />
               <Button
-                children={"Pedido Prontinho"}
+               className={style.btnCozinha}
                 handleClick={() => statusUpdate(doc)}
-              />
+                children={"Pedido Pronto!"}></Button>
             </div>
           ) : null
         )}

@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { StyleSheet, css } from "aphrodite/no-important";
+import Header from "../componentes/Header";
 
 const style = StyleSheet.create({
   bgLink: {
@@ -25,17 +26,20 @@ const style = StyleSheet.create({
 
 const Inicio = () => {
   return (
-    <nav className={css(style.bgLink)}>
-      <Link to="/restaurante" className={css(style.link)}>
-        Restaurante
-      </Link>
-      <Link to="/cozinha" className={css(style.link)}>
-        Cozinha
-      </Link>
-      <Link to="/delivery" className={css(style.link)}>
-        Delivery
-      </Link>
-    </nav>
+    <>
+      <Header />
+      <nav className={css(style.bgLink)}>
+        <Link to="/restaurante" className={css(style.link)}>
+          Restaurante
+        </Link>
+        <Link to="/cozinha" className={css(style.link)}>
+          Cozinha
+        </Link>
+        <Link to="/delivery" className={css(style.link)}>
+          Delivery
+        </Link>
+      </nav>
+    </>
   );
 };
 
