@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import firebase from "../utils/config.js";
-import OrderCozinha from "../componentes/order/Order.js";
-import Button from "../componentes/button/Button.js";
+import OrderCozinha from "../componentes/Order.js";
+import Button from "../componentes/Button.js";
 import Back from "../componentes/back/Back";
 import { StyleSheet, css } from "aphrodite/no-important";
 

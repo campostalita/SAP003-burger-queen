@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import Button from "../componentes/button/Button";
-import MenuList from "../componentes/menu/Menu";
+import Button from '../componentes/Button';
+import MenuList from "../componentes/Menu";
 import firebase from "../utils/config.js";
 import { StyleSheet, css } from "aphrodite/no-important";
-import Input from "../componentes/input/Input";
+import Input from "../componentes/Input";
 import Back from "../componentes/back/Back";
 
 const style = StyleSheet.create({
@@ -99,8 +99,8 @@ const style = StyleSheet.create({
 });
 
 function Restaurante() {
-  const [item1, setItem1] = useState([]);
-  const [item2, setItem2] = useState([]);
+  const [cafe, setCafe] = useState([]);
+  const [almoco, setAlmoco] = useState([]);
   const [productSelect, setProductSelect] = useState([]);
   const [filterMenu, setFilterMenu] = useState("breakfast");
   const [client, setClient] = useState("");
@@ -119,7 +119,7 @@ function Restaurante() {
             id: doc.id,
             ...doc.data()
           }));
-        setItem1(products);
+        setCafe(products);
 
         const products2 = snapshot.docs
           .filter(doc => doc.data().lunch)
@@ -127,7 +127,7 @@ function Restaurante() {
             id: doc.id,
             ...doc.data()
           }));
-        setItem2(products2);
+        setAlmoco(products2);
       });
   }, []);
 
@@ -163,9 +163,8 @@ function Restaurante() {
   const decreaseUnit = product => {
     if (product.contador === 1) {
      removeItem(product);
-      });
     } else {
-      product.contador--;
+      (product.contador--);
       setProductSelect([...productSelect]);
     }
   };
@@ -218,19 +217,19 @@ function Restaurante() {
               className={style.btnMenu}
               handleClick={() => setFilterMenu("breakfast")}
             >
-              Breakfast
+              Café da Manhã
             </Button>
             <Button
               className={style.btnMenu}
               handleClick={() => setFilterMenu("lunch")}
             >
-              All Day
+              Lanches
             </Button>
           </div>
           <div>
             <div className={css(style.menu)}>
               <MenuList
-                menuItens={filterMenu === "breakfast" ? item1 : item2}
+                menuItens={filterMenu === "breakfast" ? cafe : almoco}
                 handleClick={item => {
                   openOptionsAndExtras(item);
                 }}
