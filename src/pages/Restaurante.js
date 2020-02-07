@@ -164,9 +164,8 @@ function Restaurante() {
       });
   }, []);
 
-  function onSubmit(e) {
-    e.preventDefault();
-    if (client && table && productSelect.length)
+  function onSubmit() {
+    if (client && table) {
       firebase
         .collection("client")
         .add({
@@ -182,6 +181,11 @@ function Restaurante() {
           setClient("");
           setProductSelect([]);
         });
+    } else {
+      console.log("talitONA")
+      growl.error({
+        text: "Escreva o nome do cliente e da mesa.",...option });
+    }
   }
 
   const increaseUnit = product => {
